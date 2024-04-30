@@ -23,3 +23,18 @@ from datetime import datetime
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from pyspark.sql import SparkSession
+
+#----------------------------------------------------------------------
+
+default_arg ={
+    'owner':'Rizwan',
+    'start_date':datetime(2024,4,30)
+}
+
+dag = DAG(
+    'Data_Engineering_Project_Using_Big_Data_Technologies',
+    default_args = default_arg,
+    description = 'Data Extraction, Analysis and automation using Hadoop-HDFS, Hive, Spark-Spark SQL and Airflow',
+    schedule_interval = None,
+    catchup = False
+)
