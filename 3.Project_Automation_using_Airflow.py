@@ -41,7 +41,7 @@ dag = DAG(
 
 #----------------------------------------------------------------------
 
-# 1. create a folder in HDFS
+# 1.Creating a folder in Hadoop HDFS
 folder_creation_cmd_HDFS = "hadoop fs -mkdir /Data_Engineering_Project_HDFS"
 
 create_folder_HDFS_task = BashOperator(
@@ -50,9 +50,18 @@ create_folder_HDFS_task = BashOperator(
     dag = dag
 )
 
+#----------------------------------------------------------------------
 
+# 2.Uploading the Dataset to the created folder in HDFS
+upload_data_cmd_HDFS = "hadoop fs -put /home/rizwan/Downloads/Sales_Data.csv /Data_Engineering_Project_HDFS"
+
+upload_data_HDFS_task = BashOperator(
+    task_id = 'upload_data_to_HDFS',
+    bash_command = upload_data_cmd_HDFS,
+    dag = dag
+)
 
 #----------------------------------------------------------------------
 # Task Dependencies :
 
-create_folder_HDFS_task 
+create_folder_HDFS_task >> upload_data_HDFS_task
