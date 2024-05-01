@@ -42,6 +42,7 @@ dag = DAG(
 #----------------------------------------------------------------------
 
 # 1.Creating a folder in Hadoop HDFS
+
 folder_creation_cmd_HDFS = "hadoop fs -mkdir /Data_Engineering_Project_HDFS"
 
 create_folder_HDFS_task = BashOperator(
@@ -53,6 +54,7 @@ create_folder_HDFS_task = BashOperator(
 #----------------------------------------------------------------------
 
 # 2.Uploading the Dataset to the created folder in HDFS
+
 upload_data_cmd_HDFS = "hadoop fs -put /home/rizwan/Downloads/Sales_Data.csv /Data_Engineering_Project_HDFS"
 
 upload_data_HDFS_task = BashOperator(
@@ -88,7 +90,22 @@ hive_table_creation_task = BashOperator(
 )
 
 #----------------------------------------------------------------------
+ 
+ # 4.Extracting the data from HDFS to the table created in Hive 
+
+load_data_HDFS_to_Hive_cmd = """
+hive -e "LOAD DATA INPATH '/Data_Engineering_Project_HDFS/Sales_Data.csv' INTO TABLE sales_data_table;"
+"""
+
+load_data_HDFS_to_Hive_task = BashOperator(
+    task_id ='load_data_from_HDFS_to_sales_data_table_Hive',
+    bash_command = load_data_HDFS_to_Hive_cmd,
+    dag = dag
+)
+
+#----------------------------------------------------------------------
 
 # Task Dependencies :
 
-create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task
+create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task \
+>> load_data_HDFS_to_Hive_task
