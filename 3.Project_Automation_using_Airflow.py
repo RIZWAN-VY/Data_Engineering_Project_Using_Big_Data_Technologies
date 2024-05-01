@@ -62,6 +62,33 @@ upload_data_HDFS_task = BashOperator(
 )
 
 #----------------------------------------------------------------------
+
+# 3.Creating a table in Hive which is compactable with the Dataset
+
+hive_table_creation_cmd = """
+hive -e "CREATE TABLE sales_data_table (
+    dte STRING,
+    product STRING,
+    category STRING,
+    sales_rep STRING,
+    city STRING,
+    no_of_units INT,
+    price DOUBLE,
+    amount DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+TBLPROPERTIES ('skip.header.line.count'='1');"
+"""
+
+hive_table_creation_task = BashOperator(
+    task_id = 'hive_table_creation',
+    bash_command = hive_table_creation_cmd,
+    dag = dag
+)
+
+#----------------------------------------------------------------------
+
 # Task Dependencies :
 
-create_folder_HDFS_task >> upload_data_HDFS_task
+create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task
