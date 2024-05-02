@@ -148,9 +148,43 @@ top_product_task = PythonOperator(
     python_callable = top_product,
     dag=dag
 )
+
+#----------------------------------------------------------------------
+
+# Top product category by Sales :
+def top_product_category():
+    category_sales = spark_hive_connection.sql("SELECT Category,SUM(amount) AS total_sales FROM sales_database.sales_data_table GROUP BY Category ORDER BY total_sales DESC")
+    category_sales.show()
+
+    # Save the analyzed data 
+    category_sales.write.csv("/home/rizwan/Data_Engineering_Project/Analysed_Data/category_sales")
+
+top_product_category_task = PythonOperator(
+    task_id = 'top_selling_product_category',
+    python_callable = top_product_category,
+    dag=dag
+)
+
+#----------------------------------------------------------------------
+
+# Top Sales Representitive :
+def best_sales_rep():
+    sale_rep_totalsales = spark_hive_connection.sql("SELECT sales_rep, SUM(amount) AS sale_rep_totalsales \
+                                                    FROM sales_database.sales_data_table GROUP BY sales_rep ORDER BY sale_rep_totalsales DESC")
+    sale_rep_totalsales.show()
+
+    # Save the analyzed data 
+    sale_rep_totalsales.write.csv("/home/rizwan/Data_Engineering_Project/Analysed_Data/sale_rep_totalsales")
+
+best_sales_rep_task = PythonOperator(
+    task_id = 'top_performing_sales_rep',
+    python_callable = best_sales_rep,
+    dag=dag
+)
+
 #----------------------------------------------------------------------
 
 # Task Dependencies :
 
-create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task \
->> load_data_HDFS_to_Hive_task >> [sales_statistics_task, top_product_task]
+create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task >> load_data_HDFS_to_Hive_task \
+>> [sales_statistics_task, top_product_task, top_product_category_task, best_sales_rep_task]
