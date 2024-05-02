@@ -184,7 +184,23 @@ best_sales_rep_task = PythonOperator(
 
 #----------------------------------------------------------------------
 
+# Sales by city :
+def sales_by_city():
+    sales_by_city = spark_hive_connection.sql("SELECT city, SUM(amount) AS totalsales_by_city FROM sales_database.sales_data_table GROUP BY city ORDER BY totalsales_by_city DESC")
+    sales_by_city.show()
+
+    # Save the analyzed data 
+    sales_by_city.write.csv("/home/rizwan/Data_Engineering_Project/Analysed_Data/sales_by_city")
+
+sales_by_city_task = PythonOperator(
+    task_id = 'top_sales_by_cities',
+    python_callable = sales_by_city,
+    dag=dag
+)
+
+#----------------------------------------------------------------------
+
 # Task Dependencies :
 
 create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task >> load_data_HDFS_to_Hive_task \
->> [sales_statistics_task, top_product_task, top_product_category_task, best_sales_rep_task]
+>> [sales_statistics_task, top_product_task, top_product_category_task, best_sales_rep_task, sales_by_city_task]
