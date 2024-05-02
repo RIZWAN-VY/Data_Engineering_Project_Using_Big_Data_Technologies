@@ -115,7 +115,42 @@ spark_hive_connection = SparkSession.builder \
 
 #----------------------------------------------------------------------
 
+# Function and Task for Analysing Data
+
+# Sales Statistics :
+def sales_statistics():
+    data = spark_hive_connection.sql("SELECT * FROM sales_database.sales_data_table")
+    statistics = data.describe(["no_of_units", "price", "amount"])
+    statistics.show()
+
+    # Save the analyzed data 
+    statistics.write.csv("/home/rizwan/Data_Engineering_Project/Analysed_Data/Sales_Statistics")
+
+sales_statistics_task = PythonOperator(
+    task_id = 'calculating_sales_statistics',
+    python_callable = sales_statistics,
+    dag=dag
+)
+
+#----------------------------------------------------------------------
+
+# Top Product by Sales :
+def top_product():
+    product_sales = spark_hive_connection.sql("SELECT product,SUM(no_of_units) AS total_units,SUM(price) AS total_price,SUM(amount) AS product_sales \
+                                              FROM sales_database.sales_data_table GROUP BY product ORDER BY product_sales DESC")
+    product_sales.show()
+
+    # Save the analyzed data 
+    product_sales.write.csv("/home/rizwan/Data_Engineering_Project/Analysed_Data/product_sales")
+
+top_product_task = PythonOperator(
+    task_id = 'top_selling_product',
+    python_callable = top_product,
+    dag=dag
+)
+#----------------------------------------------------------------------
+
 # Task Dependencies :
 
 create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task \
->> load_data_HDFS_to_Hive_task
+>> load_data_HDFS_to_Hive_task >> [sales_statistics_task, top_product_task]
