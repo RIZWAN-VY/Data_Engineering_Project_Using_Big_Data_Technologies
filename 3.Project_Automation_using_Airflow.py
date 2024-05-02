@@ -105,6 +105,16 @@ load_data_HDFS_to_Hive_task = BashOperator(
 
 #----------------------------------------------------------------------
 
+# 5.Connecting Hive and Spark and doing analysis using Spark SQL 
+spark_hive_connection = SparkSession.builder \
+                        .appName("Data_Extraction_and_Analysis") \
+                        .config("spark.sql.warehouse.dir", "/user/hive/warehouse") \
+                        .enableHiveSupport() \
+                        .getOrCreate()
+
+
+#----------------------------------------------------------------------
+
 # Task Dependencies :
 
 create_folder_HDFS_task >> upload_data_HDFS_task >> hive_table_creation_task \
