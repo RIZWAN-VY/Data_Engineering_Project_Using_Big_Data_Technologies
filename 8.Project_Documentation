@@ -1,0 +1,23 @@
+ PROJECT DOCUMENTATION 
+ 
+ Steps :
+    1.Create a folder in Hadoop HDFS
+
+    2.Upload the Dataset to the created folder in HDFS
+
+    3.Create a table in Hive which is compactable with the Dataset
+
+    4.Extract the data from HDFS to the table created in Hive
+
+    5.Connect Hive and Spark and doing analysis using Spark SQL
+        Sales Statistics
+        Top Selling Product
+        Top Product Category
+        Top Performing Sales Representative
+        Sales by City
+
+    6.Upload the analysed data back to HDFS
+
+    7.Automate the entire project using Apache Airflow
+
+    8.Create an interactive dashboard using Power BI
