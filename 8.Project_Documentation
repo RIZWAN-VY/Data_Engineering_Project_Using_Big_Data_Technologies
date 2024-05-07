@@ -1,6 +1,7 @@
  PROJECT DOCUMENTATION 
  
- Steps :
+ Steps :- 
+
     1.Create a folder in Hadoop HDFS
 
     2.Upload the Dataset to the created folder in HDFS
@@ -21,3 +22,79 @@
     7.Automate the entire project using Apache Airflow
 
     8.Create an interactive dashboard using Power BI
+
+========================================================================================================================
+
+Dataset = 1.Sales_Data.sv
+
+1.Create a folder in Hadoop HDFS
+
+	hadoop fs -mkdir /Data_Engineering_Project_HDFS
+
+----------
+
+2.Upload the Dataset to the created folder in HDFS
+
+	hadoop fs -put /home/rizwan/Downloads/Sales_Data.csv /Data_Engineering_Project_HDFS
+
+To display the data
+hadoop fs -cat /Data_Engineering_Project_HDFS/Sales_Data.csv
+
+----------
+
+3.Create a table in Hive which is compactable with the Dataset
+
+hive -e "CREATE TABLE sales_data_table (
+    dte STRING,
+    product STRING,
+    category STRING,
+    sales_rep STRING,
+    city STRING,
+    no_of_units INT,
+    price DOUBLE,
+    amount DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+TBLPROPERTIES ('skip.header.line.count'='1');
+
+----------
+
+4.Extract the data from HDFS to the table created in Hive
+
+hive -e "LOAD DATA INPATH '/Data_Engineering_Project_HDFS/Sales_Data.csv' INTO TABLE sales_data_table;"
+
+----------
+
+5.Connect Hive and Spark and doing analysis using Spark SQL
+
+	file = 2.Data_Extraction_and_Analysis.ipynb
+
+Analysed the data using Apache Spark SQL and find insight like
+   * Sales Statistics
+   * Top selling Product
+   * Top selling product Category
+   * Best performing sales representitive
+   * Sales by city
+
+----------
+
+6.Upload the analysed data back to HDFS
+
+	hadoop fs -put /home/rizwan/Data_Engineering_Project/Analysed_Data /Data_Engineering_Project_HDFS'
+
+----------
+
+7.Automate the entire project using Apache Airflow
+
+	file = 3.Project_Automation_using_Airflow.py
+	       4.Airflow_Automation_image
+
+----------
+
+8.Create an interactive dashboard using Power BI
+
+	Dataset = 5.processed_Sales_data.csv
+		  6.Power_BI_Dashboard.pbix
+		  7.Power_BI_Dashboard.pdf
+
