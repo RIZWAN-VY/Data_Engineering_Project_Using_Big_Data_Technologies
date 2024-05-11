@@ -13,3 +13,7 @@
 ---
 
 ![9 Data_Engineering_Project_Workflow](https://github.com/RIZWAN-VY/Data_Engineering_Project_Using_Big_Data_Technologies/assets/131337205/6ba34e0e-6df7-424b-81cb-e6ce4d8886f6)
+
+---
+## Power BI Dashboard
+![Dashboard](https://github.com/RIZWAN-VY/Data_Engineering_Project_Using_Big_Data_Technologies/assets/131337205/3e8d3475-5238-440a-b5fb-dbff5e206093)
